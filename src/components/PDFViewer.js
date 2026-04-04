@@ -14,7 +14,7 @@ function PDFViewer({ file, onClose }) {
   const [mode, setMode] = useState('annotate');
   const [activeTool, setActiveTool] = useState('highlight');
   const [activeColor, setActiveColor] = useState('#FFFF00');
-  const [opacity, setOpacity] = useState(0.7);
+  const [opacity, setOpacity] = useState(0.4);
   const pdfRef = useRef(null);
   const hasLoaded = useRef(false);
   const highlightHistoryRef = useRef([]);

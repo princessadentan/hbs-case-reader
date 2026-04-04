@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=Lora:wght@400;500&display=swap');
+
 * {
   box-sizing: border-box;
   margin: 0;
@@ -5,9 +7,10 @@
 }
 
 body {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  background: #1a1a2e;
-  color: #eee;
+  font-family: 'DM Sans', sans-serif;
+  background: #F7F5F2;
+  color: #1C1C1C;
+  -webkit-font-smoothing: antialiased;
 }
 
 .upload-screen {
@@ -15,30 +18,40 @@ body {
   align-items: center;
   justify-content: center;
   height: 100vh;
+  background: #F7F5F2;
 }
 
 .drop-zone {
-  border: 2px dashed #4D96FF;
-  border-radius: 16px;
-  padding: 60px 80px;
+  border: 1.5px dashed #C8C4BE;
+  border-radius: 20px;
+  padding: 64px 96px;
   text-align: center;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.25s ease;
+  background: #FFFFFF;
+  box-shadow: 0 2px 24px rgba(0,0,0,0.04);
 }
 
 .drop-zone:hover {
-  background: rgba(77, 150, 255, 0.1);
+  border-color: #3D5A80;
+  box-shadow: 0 4px 32px rgba(61,90,128,0.08);
 }
 
 .drop-zone h1 {
-  font-size: 2rem;
-  margin-bottom: 12px;
-  color: #4D96FF;
+  font-family: 'Lora', serif;
+  font-size: 2.2rem;
+  font-weight: 500;
+  margin-bottom: 10px;
+  color: #1C1C1C;
+  letter-spacing: -0.02em;
 }
 
 .drop-zone p {
-  color: #aaa;
-  margin-bottom: 24px;
+  color: #8A8680;
+  font-size: 0.95rem;
+  font-weight: 300;
+  margin-bottom: 32px;
+  letter-spacing: 0.01em;
 }
 
 #file-input {
@@ -46,15 +59,20 @@ body {
 }
 
 .upload-btn {
-  background: #4D96FF;
+  background: #3D5A80;
   color: white;
-  padding: 12px 32px;
-  border-radius: 8px;
+  padding: 12px 36px;
+  border-radius: 10px;
   cursor: pointer;
-  font-size: 1rem;
-  transition: background 0.2s;
+  font-size: 0.9rem;
+  font-weight: 500;
+  font-family: 'DM Sans', sans-serif;
+  transition: all 0.2s ease;
+  letter-spacing: 0.02em;
+  display: inline-block;
 }
 
 .upload-btn:hover {
-  background: #3a7bd5;
+  background: #2E4460;
+  box-shadow: 0 4px 16px rgba(61,90,128,0.2);
 }

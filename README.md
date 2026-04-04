@@ -1,70 +1,109 @@
-# Getting Started with Create React App
+# HBS Case Reader
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+A reading tool for MBA case prep. Upload a PDF, generate audio via the ElevenLabs API, 
+and annotate while you listen — all in one place.
 
-## Available Scripts
+![HBS Case Reader](assets/screenshothbsreader.png)
 
-In the project directory, you can run:
+---
 
-### `npm start`
+## Why I built this
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+My case prep workflow had an annoying gap. I would download a case from Canvas, upload 
+it to Speechify for audio, and open it separately in Lumen for annotation. Two windows, 
+constant switching, and no way to connect what I was hearing to what I was marking up.
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+I wanted a single tool where the PDF, the audio, and my annotations live together. So 
+I built one.
 
-### `npm test`
+This also gave me a concrete reason to work directly with the ElevenLabs API — something 
+I wanted to do before interviewing for product roles there.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+---
 
-### `npm run build`
+## What it does
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+Upload any PDF and the app renders it page by page. From there you can generate 
+text-to-speech audio of the case content using ElevenLabs, then read and listen at 
+the same time.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+The annotation layer sits directly on the PDF using a text-selection model, so 
+highlighting lands precisely on the words you select rather than as a freehand overlay. 
+You can pick from eight colors, adjust opacity, double-highlight to darken, and undo 
+the last annotation or clear everything.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+The audio player includes playback speed controls from 1x to 2x and 10-second skip 
+buttons in both directions — the two controls that actually matter during case review.
 
-### `npm run eject`
+---
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+## Product decisions worth noting
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+**Text-layer highlighting over freehand drawing.** The first version rendered pages as 
+static images, which made annotation impossible without a separate canvas layer. I 
+rebuilt the PDF rendering to use PDF.js's text extraction, which places invisible 
+selectable spans over the rendered page. Highlighting then works by detecting which 
+spans fall within a selection and applying background color directly to them. This 
+produces clean, line-accurate highlights rather than approximate brush strokes.
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+**Audio chunking architecture.** The ElevenLabs Starter plan has a per-request 
+character limit. The app currently generates audio for the first 15,000 characters of 
+a case — roughly 10-12 minutes. The chunking logic to stitch multiple API responses 
+into a single audio file is built and tested; it is gated by credits rather than 
+missing from the codebase. A Creator plan ($22/month) would support full-length case 
+audio.
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+**Opacity accumulation on double-highlight.** Highlighting the same text twice 
+intentionally increases opacity rather than resetting it. This mirrors how physical 
+highlighters behave and lets you emphasize particularly important passages without 
+switching to a separate tool.
 
-## Learn More
+---
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+## What's next
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+- Reading position indicator that shows which sentence the audio is currently reading
+- Persistent annotation storage using Firebase so highlights survive across sessions
+- Full-case audio generation once credit limits allow
+- Drawing layer for freehand margin notes
 
-### Code Splitting
+---
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+## How to run it
 
-### Analyzing the Bundle Size
+Clone the repo and install dependencies:
+```bash
+git clone https://github.com/princessadentan/hbs-case-reader.git
+cd hbs-case-reader
+npm install
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+Create a `.env` file in the root with your API keys:
+```
+REACT_APP_ELEVENLABS_API_KEY=your_elevenlabs_key_here
+REACT_APP_FIREBASE_API_KEY=your_firebase_api_key
+REACT_APP_FIREBASE_AUTH_DOMAIN=your_project.firebaseapp.com
+REACT_APP_FIREBASE_PROJECT_ID=your_project_id
+REACT_APP_FIREBASE_STORAGE_BUCKET=your_project.firebasestorage.app
+REACT_APP_FIREBASE_MESSAGING_SENDER_ID=your_sender_id
+REACT_APP_FIREBASE_APP_ID=your_app_id
+```
 
-### Making a Progressive Web App
+Start the development server:
+```bash
+npm start
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+---
 
-### Advanced Configuration
+## Built with
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+- React
+- PDF.js for PDF rendering and text extraction
+- ElevenLabs API for text-to-speech generation
+- Firebase for backend and authentication
+- Native Canvas API for the annotation layer
 
-### Deployment
+---
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+*HBS '26. Previously Google Search and Google X. Focused on AI, emerging markets, and the infrastructure that makes intelligence useful.*
