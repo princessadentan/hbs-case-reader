@@ -8,9 +8,7 @@ A reading tool for MBA case prep. Upload a PDF, generate audio via the ElevenLab
 
 ## Why I built this
 
-My case prep workflow had a frustrating gap. I would download a case from Canvas, upload it to Speechify for audio, and open it separately in Lumen for annotation. Two windows, constant switching, no way to connect what I was hearing to what I was marking up.
-
-I wanted a single tool where the PDF, the audio, and my annotations live together. I also wanted a concrete reason to work directly with the ElevenLabs API before interviewing for product roles there.
+My case prep workflow had a frustrating gap. I would download a case from Canvas, upload it to Speechify for audio, and open it separately in Lumen for annotation. I was constantly switching between two windows to pause or replay the audio with no way to sync up what I was hearing with what I was annotating. I wanted a single tool where the PDF, the audio, and my annotations live together. I also wanted a concrete reason to work directly with the ElevenLabs API.
 
 ---
 
@@ -26,11 +24,11 @@ The audio player includes playback speed controls from 1x to 2x and 10-second sk
 
 ## Product decisions worth noting
 
-**Text-layer highlighting over freehand drawing.** The first version rendered pages as static images, which made annotation impossible without a separate canvas layer. I rebuilt the PDF rendering to use PDF.js's text extraction, which places invisible selectable spans over the rendered page. Highlighting works by detecting which spans fall within a selection and applying background color directly to them. This produces clean, line-accurate highlights rather than approximate brush strokes.
+**Text-layer highlighting over freehand drawing.** The first version rendered PDF pages as static images. Annotation required a separate canvas layer drawn over the image, which meant highlights were approximate brush strokes rather than word-accurate marks. I rebuilt the rendering to use PDF.js text extraction, placing invisible selectable spans over each rendered page so highlights apply directly to the words you select. The tradeoff was implementation time upfront and losing some flexibility for non-text PDFs, but the reading experience is meaningfully closer to studying a real document.
 
-**Audio chunking architecture.** The ElevenLabs Starter plan has a per-request character limit. The app currently generates audio for the first 15,000 characters of a case, roughly 10-12 minutes. The chunking logic to stitch multiple API responses into a single audio file is built and tested. It is gated by credits rather than missing from the codebase. A Creator plan would support full-length case audio.
+**Audio chunking architecture.** The ElevenLabs Starter plan has a per-request character limit. The app currently generates audio for the first 15,000 characters of a case, roughly 10-12 minutes. The chunking logic to stitch multiple API responses into a single audio file is built and tested. It is gated by credits, not missing from the codebase. The tradeoff is that longer cases get cut off, which is friction I've hit personally.
 
-**Opacity accumulation on double-highlight.** Highlighting the same text twice intentionally increases opacity rather than resetting it. This mirrors how physical highlighters behave and lets you emphasize particularly important passages without switching to a separate tool.
+**Opacity accumulation on double-highlight.** Highlighting the same text twice increases opacity rather than resetting it, which mirrors how physical highlighters work and lets you add emphasis without switching tools. The tradeoff is that it's not immediately obvious behavior so a first-time user might expect a second highlight to toggle off rather than darken, but the natural feel felt worth a small learning curve.
 
 ---
 
@@ -40,7 +38,6 @@ The audio player includes playback speed controls from 1x to 2x and 10-second sk
 - Persistent annotation storage using Firebase so highlights survive across sessions
 - Full-case audio generation once credit limits allow
 - Drawing layer for freehand margin notes
-
 
 ---
 
@@ -75,7 +72,7 @@ npm start
 
 - React
 - PDF.js for PDF rendering and text extraction
-- ElevenLabs API for text-to-speech generation
+- ElevenLabs API for text-to-speech
 - Firebase for backend and authentication
 - Native Canvas API for the annotation layer
 
